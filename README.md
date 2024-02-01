@@ -1,2 +1,3 @@
 # NightshadeDetection
-Attempt to detect Nightshade-polluted Danbooru images
+Attempt to detect Nightshade-protected ("shaded") images
+
