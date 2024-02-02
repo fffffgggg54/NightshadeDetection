@@ -12,7 +12,7 @@ from timm.loss import AsymmetricLossMultiLabel
 lr = 3e-3
 lr_warmup_epochs = 5
 num_epochs = 100
-batch_size = 32
+batch_size = 128
 grad_acc_epochs = 1
 weight_decay = 1e-4
 
@@ -142,7 +142,7 @@ def getDataLoader(dataset):
         dataset,
         batch_size = batch_size,
         shuffle=True,
-        num_workers=4,
+        num_workers=8,
         persistent_workers = True,
         prefetch_factor=2, 
         pin_memory = True, 
@@ -166,7 +166,7 @@ if __name__ == '__main__':
     datasets = {'train':train_ds,'val':test_ds}
     dataloaders = {x: getDataLoader(datasets[x]) for x in datasets}
     
-    model = timm.create_model('resnet18', num_classes=1)
+    model = timm.create_model('mobilenetv3_small_050', num_classes=1)
     model=model.to(device)
     optimizer = torch.optim.SGD(model.parameters(), lr=lr, weight_decay=weight_decay)
     criterion = AsymmetricLossMultiLabel(gamma_neg=0, gamma_pos=0, clip=0.0, eps=1e-8)
