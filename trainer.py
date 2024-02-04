@@ -8,6 +8,7 @@ from timm.models import *
 import time
 
 from timm.loss import AsymmetricLossMultiLabel
+from timm.models import ConvNeXt
 
 lr = 3e-3
 lr_warmup_epochs = 5
@@ -142,7 +143,7 @@ def getDataLoader(dataset):
         dataset,
         batch_size = batch_size,
         shuffle=True,
-        num_workers=8,
+        num_workers=14,
         persistent_workers = True,
         prefetch_factor=2, 
         pin_memory = True, 
@@ -150,13 +151,15 @@ def getDataLoader(dataset):
         generator=torch.Generator().manual_seed(41)
     )
     
+
+
     
 if __name__ == '__main__':
 
     ds = torchvision.datasets.ImageFolder(
         './data/nightshade_448/different_set',
         transform=transforms.Compose([
-            transforms.Resize((448,448)),
+            transforms.Resize((224,224)),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
         ])
@@ -166,7 +169,7 @@ if __name__ == '__main__':
     datasets = {'train':train_ds,'val':test_ds}
     dataloaders = {x: getDataLoader(datasets[x]) for x in datasets}
     
-    model = timm.create_model('mobilenetv3_small_050', num_classes=1)
+    model = timm.create_model('regnety_008', num_classes=1)
     model=model.to(device)
     optimizer = torch.optim.SGD(model.parameters(), lr=lr, weight_decay=weight_decay)
     criterion = AsymmetricLossMultiLabel(gamma_neg=0, gamma_pos=0, clip=0.0, eps=1e-8)
